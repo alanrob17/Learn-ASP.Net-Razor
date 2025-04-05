@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Add a model to a Razor Pages app</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Get started with Razor Pages in ASP.NET Core</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Add a model to a Razor Pages app <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="add-a-model-to-a-razor-pages-app-in-aspnet-core">Add a model to a Razor Pages app in ASP.NET Core</h1>
+<p>In this tutorial, classes are added for managing movies in a database. The app's model classes use <a href="https://learn.microsoft.com/en-us/ef/core">Entity Framework Core (EF Core)</a> to work with the database. EF Core is an object-relational mapper (O/RM) that simplifies data access. You write the model classes first, and EF Core creates the database.</p>
+<p>The model classes are known as <code>POCO</code> classes (from &quot;Plain-Old CLR Objects&quot;) because they don't have a dependency on EF Core. They define the properties of the data that are stored in the database.</p>
+<p>In Solution Explorer, right-click the <code>RazorPagesMovie</code> project &gt; Add &gt; New Folder. Name the folder <code>Models</code>.</p>
+<p>Right-click the <code>Models</code> folder. Select Add &gt; Class. Name the class <code>Movie</code>.</p>
+<p>Add the following properties to the <code>Movie</code> class:</p>
+<pre class="prettyprint"><code><div>using System.ComponentModel.DataAnnotations;
+
+namespace RazorPagesMovie.Models;
+
+public class Movie
+{
+    public int Id { get; <span class="hljs-built_in">set</span>; }
+    public string? Title { get; <span class="hljs-built_in">set</span>; }
+    [DataType(DataType.Date)]
+    public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+    public string? Genre { get; <span class="hljs-built_in">set</span>; }
+    public decimal Price { get; <span class="hljs-built_in">set</span>; }
+}
+</div></code></pre>
+<p>The Movie class contains:</p>
+<p>The <code>ID</code> field is required by the database for the primary key.</p>
+<p>A <a href="https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.datatypeattribute">DataType</a> attribute that specifies the type of data in the ReleaseDate property. With this attribute:</p>
+<p>The user isn't required to enter time information in the date field.</p>
+<p>Only the date is displayed, not time information.</p>
+<p>The question mark after string indicates that the property is <code>nullable</code>. For more information, see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references">Nullable reference types</a>.</p>
+<p><a href="https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations">DataAnnotations</a> are covered in a later tutorial.</p>
+<p>Build the project to verify there are no compilation errors.</p>
+<h2 id="scaffold-the-movie-model">Scaffold the movie model</h2>
+<p>In this section, the movie model is scaffolded. That is, the scaffolding tool produces pages for Create, Read, Update, and Delete (CRUD) operations for the movie model.</p>
+<p>Create the <code>Pages/Movies</code> folder:</p>
+<p>Right-click on the Pages folder &gt; Add &gt; New Folder. Name the folder <code>Movies</code>.</p>
+<p>Right-click on the <code>Pages/Movies</code> folder &gt; Add &gt; New Scaffolded Item.</p>
+<p>In the Add New Scaffold dialog, select <code>Razor Pages using Entity Framework (CRUD)</code> &gt; Add.</p>
+<p>Complete the Add Razor Pages using Entity Framework (CRUD) dialog:</p>
+<p>In the Model class drop down, select <code>Movie (RazorPagesMovie.Models)</code>.</p>
+<p>In the Data context class row, select the <code>+ (plus)</code> sign.</p>
+<p>In the Add Data Context dialog, the class name <code>RazorPagesMovie.Data.RazorPagesMovieContext</code> is generated.</p>
+<p>In the Database provider drop down, select <code>SQL Server</code>.</p>
+<p>Select <code>Add</code>.</p>
+<h3 id="files-created-and-updated">Files created and updated</h3>
+<p>The scaffold process creates the following files:</p>
+<p>Pages/Movies: Create, Delete, Details, Edit, and Index.</p>
+<p>Data/RazorPagesMovieContext.cs</p>
+<p>The created files are explained in the next tutorial.</p>
+<p>The scaffold process adds the following code to the <code>Program.cs</code> file:</p>
+<pre class="prettyprint"><code><div>using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using RazorPagesMovie.Data;
+namespace RazorPagesMovie
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+                options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>) ?? throw new InvalidOperationException(<span class="hljs-string">"Connection string 'RazorPagesMovieContext' not found."</span>)));
+
+            // Add services to the container.
+            builder.Services.AddRazorPages();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            <span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+                // The default HSTS value is 30 days. You may want to change this <span class="hljs-keyword">for</span> production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.MapStaticAssets();
+            app.MapRazorPages()
+               .WithStaticAssets();
+
+            app.Run();
+        }
+    }
+}
+</div></code></pre>
+<h2 id="create-the-initial-database-schema-using-efs-migration-feature">Create the initial database schema using EF's migration feature</h2>
+<p>The migrations feature in Entity Framework Core provides a way to:</p>
+<p>Create the initial database schema.</p>
+<p>Incrementally update the database schema to keep it in sync with the app's data model. Existing data in the database is preserved.</p>
+<p>In this section, the <strong>Package Manager Console (PMC)</strong> window is used to:</p>
+<p>Add an initial migration.</p>
+<p>Update the database with the initial migration.</p>
+<p>From the Tools menu, select <strong>NuGet Package Manager &gt; Package Manager Console</strong>.</p>
+<p>In the PMC, enter the following command:</p>
+<pre class="prettyprint"><code><div>    Add-Migration InitialCreate
+</div></code></pre>
+<p>The <code>Add-Migration</code> command generates code to create the initial database schema. The schema is based on the model specified in <code>DbContext</code>. The <code>InitialCreate</code> argument is used to name the migration. Any name can be used, but by convention a name is selected that describes the migration.</p>
+<p>The following warning is displayed, which is addressed in a later step:</p>
+<p>No type was specified for the decimal column 'Price' on entity type 'Movie'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values using 'HasColumnType()'.</p>
+<p>In the PMC, enter the following command:</p>
+<pre class="prettyprint"><code><div>    Update-Database
+</div></code></pre>
+<p>The <code>Update-Database</code> command runs the <code>Up</code> method in migrations that have not been applied. In this case, the command runs the <code>Up</code> method in the <code>Migrations/&lt;time-stamp&gt;_InitialCreate.cs</code> file, which creates the database.</p>
+<p>The data context <code>RazorPagesMovieContext</code>:</p>
+<p>Derives from <a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontext">Microsoft.EntityFrameworkCore.DbContext</a>.</p>
+<p>Specifies which entities are included in the data model.</p>
+<p>Coordinates EF Core functionality, such as Create, Read, Update and Delete, for the <code>Movie</code> model.</p>
+<p>The <code>RazorPagesMovieContext</code> class in the generated file <code>Data/RazorPagesMovieContext.cs</code>:</p>
+<pre class="prettyprint"><code><div>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using RazorPagesMovie.Models;
+
+namespace RazorPagesMovie.Data
+{
+    public class RazorPagesMovieContext : DbContext
+    {
+        public RazorPagesMovieContext (DbContextOptions&lt;RazorPagesMovieContext&gt; options)
+            : base(options)
+        {
+        }
+
+        public DbSet&lt;RazorPagesMovie.Models.Movie&gt; Movie { get; <span class="hljs-built_in">set</span>; } = default!;
+    }
+}
+</div></code></pre>
+<p>The preceding code creates a <a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet<Movie></a> property for the entity set. In Entity Framework terminology, an entity set typically corresponds to a database table. An entity corresponds to a row in the table.</p>
+<p>The name of the connection string is passed in to the context by calling a method on a <a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontextoptions">DbContextOptions</a> object. For local development, the <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0">Configuration system</a> reads the connection string from the <code>appsettings.json</code> file.</p>
+<h3 id="test-the-app">Test the app</h3>
+<p>Run the app and append <code>/Movies</code> to the URL in the browser (http://localhost:port/movies). Add a new movie, edit it and delete it.</p>
+<h2 id="examine-the-context-registered-with-dependency-injection">Examine the context registered with dependency injection</h2>
+<p>ASP.NET Core is built with <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-9.0">dependency injection</a>. Services, such as the EF Core database context, are registered with dependency injection during application startup. Components that require these services (such as Razor Pages) are provided via constructor parameters. The constructor code that gets a database context instance is shown later in the tutorial.</p>
+<p>The scaffolding tool automatically created a database context and registered it with the dependency injection container. The following highlighted code is added to the <code>Program.cs</code> file by the scaffolder:</p>
+<pre class="prettyprint"><code><div>builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+    options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>) ?? throw new InvalidOperationException(<span class="hljs-string">"Connection string 'RazorPagesMovieContext' not found."</span>)));
+</div></code></pre>
+
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>

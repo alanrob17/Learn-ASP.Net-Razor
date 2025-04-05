@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Get started with Razor Pages</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Get started with Razor Pages in ASP.NET Core</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Get started with Razor Pages <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="get-started-with-razor-pages-in-aspnet-core">Get started with Razor Pages in ASP.NET Core</h1>
+<p><a href="https://learn.microsoft.com/en-us/aspnet/core/tutorials/razor-pages/razor-pages-start?view=aspnetcore-9.0&amp;tabs=visual-studio">Microsoft tutorial</a>.</p>
+<p>At the end of this tutorial, you'll have a Razor Pages web app that manages a database of movies.</p>
+<h2 id="examine-the-project-files">Examine the project files</h2>
+<p>The following sections contain an overview of the main project folders and files that you'll work with in later tutorials.</p>
+<h2 id="pages-folder">Pages folder</h2>
+<p>Contains Razor pages and supporting files. Each Razor page is a pair of files:</p>
+<ul>
+<li>A .cshtml file that has HTML markup with C# code using Razor syntax.</li>
+<li>A .cshtml.cs file that has C# code that handles page events.</li>
+</ul>
+<p>Supporting files have names that begin with an underscore. For example, the <code>_Layout.cshtml</code> file configures UI elements common to all pages. <code>_Layout.cshtml</code> sets up the navigation menu at the top of the page and the copyright notice at the bottom of the page. For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/layout?view=aspnetcore-9.0">Layout in ASP.Net Core</a>.</p>
+<h3 id="wwwroot-folder">wwwroot folder</h3>
+<p>Contains static assets, like HTML files, JavaScript files, and CSS files. For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0">Static files in ASP.NET Core</a>.</p>
+<h3 id="appsettingsjson">appsettings.json</h3>
+<p>Contains configuration data, like connection strings. For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0">Configuration in ASP.NET Core</a>.</p>
+<h3 id="programcs">Program.cs</h3>
+<p>Contains the following code:</p>
+<pre class="prettyprint"><code><div>var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+<span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+    // The default HSTS value is 30 days. You may want to change this <span class="hljs-keyword">for</span> production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapStaticAssets();
+app.MapRazorPages();
+
+app.Run();
+</div></code></pre>
+<p>The following lines of code in this file create a WebApplicationBuilder with preconfigured defaults, add Razor Pages support to <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-9.0">the Dependency Injection (DI) container</a>, and builds the app:</p>
+<pre class="prettyprint"><code><div>var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+</div></code></pre>
+<p>The developer exception page is enabled by default and provides helpful information on exceptions. Production apps should not be run in development mode because the developer exception page can leak sensitive information.</p>
+<p>The following code sets the exception endpoint to /Error and enables <a href="https://learn.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-9.0#http-strict-transport-security-protocol-hsts">HTTP Strict Transport Security Protocol (HSTS)</a> when the app is not running in development mode:</p>
+<pre class="prettyprint"><code><div>// Configure the HTTP request pipeline.
+<span class="hljs-keyword">if</span> (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler(<span class="hljs-string">"/Error"</span>);
+    // The default HSTS value is 30 days. You may want to change this <span class="hljs-keyword">for</span> production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+</div></code></pre>
+<p>For example, the preceding code runs when the app is in production or test mode. For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-9.0">Use multiple environments in ASP.NET Core</a>.</p>
+<p>The following code enables various <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-9.0">Middleware</a>:</p>
+<p><code>app.UseHttpsRedirection();</code> : Redirects HTTP requests to HTTPS.</p>
+<p><code>app.UseRouting();</code> : Adds route matching to the middleware pipeline. For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-9.0">Routing in ASP.NET Core</a>.</p>
+<p><code>app.UseAuthorization();</code> : Authorizes a user to access secure resources. This app doesn't use authorization, therefore this line could be removed.</p>
+<p><code>app.MapRazorPages();</code> : Configures endpoint routing for Razor Pages.</p>
+<p><code>app.MapStaticAssets();</code> : Optimize the delivery of static assets in an app, such as HTML, CSS, images, and JavaScript.</p>
+<p><code>app.Run();</code> : Runs the app.</p>
+
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
