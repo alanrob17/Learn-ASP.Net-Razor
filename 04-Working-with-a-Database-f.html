@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Working with a Database</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Get started with Razor Pages in ASP.NET Core</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Working with a Database <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="working-with-a-database">Working with a Database</h1>
+<p>The <code>RazorPagesMovieContext</code> object handles the task of connecting to the database and mapping <code>Movie</code> objects to database records. The database context is registered with the <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-9.0">Dependency Injection</a> container in Program.cs:</p>
+<pre class="prettyprint"><code><div>builder.Services.AddDbContext&lt;RazorPagesMovieContext&gt;(options =&gt;
+    options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="hljs-string">"RazorPagesMovieContext"</span>) ?? throw new InvalidOperationException(<span class="hljs-string">"Connection string 'RazorPagesMovieContext' not found."</span>)));
+</div></code></pre>
+<p>The ASP.NET Core <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0">Configuration</a> system reads the <code>ConnectionString</code> key. For local development, configuration gets the connection string from the <code>appsettings.json</code> file.</p>
+<pre class="prettyprint"><code><div><span class="hljs-string">"ConnectionStrings"</span>: {
+    <span class="hljs-string">"RazorPagesMovieContext"</span>: <span class="hljs-string">"Server=(localdb)\\mssqllocaldb;Database=RazorPagesMovieContext-f2e0482c-952d-4b1c-afe9-a1a3dfe52e55;Trusted_Connection=True;MultipleActiveResultSets=true"</span>
+  }
+</div></code></pre>
+<h2 id="seed-the-database">Seed the database</h2>
+<p>Create a new class named <code>SeedData</code> in the <code>Models</code> folder with the following code:</p>
+<pre class="prettyprint"><code><div>using Microsoft.EntityFrameworkCore;
+using RazorPagesMovie.Data;
+
+namespace RazorPagesMovie.Models
+{
+    public class SeedData
+    {
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            using (var context = new RazorPagesMovieContext(
+                serviceProvider.GetRequiredService&lt;
+                    DbContextOptions&lt;RazorPagesMovieContext&gt;&gt;()))
+            {
+                <span class="hljs-keyword">if</span> (context == null || context.Movie == null)
+                {
+                    throw new ArgumentNullException(<span class="hljs-string">"Null RazorPagesMovieContext"</span>);
+                }
+
+                // Look <span class="hljs-keyword">for</span> any movies.
+                <span class="hljs-keyword">if</span> (context.Movie.Any())
+                {
+                    <span class="hljs-built_in">return</span>;   // DB has been seeded
+                }
+
+                context.Movie.AddRange(
+                    new Movie
+                    {
+                        Title = <span class="hljs-string">"When Harry Met Sally"</span>,
+                        ReleaseDate = DateTime.Parse(<span class="hljs-string">"1989-2-12"</span>),
+                        Genre = <span class="hljs-string">"Romantic Comedy"</span>,
+                        Price = 7.99M
+                    },
+
+                    new Movie
+                    {
+                        Title = <span class="hljs-string">"Ghostbusters "</span>,
+                        ReleaseDate = DateTime.Parse(<span class="hljs-string">"1984-3-13"</span>),
+                        Genre = <span class="hljs-string">"Comedy"</span>,
+                        Price = 8.99M
+                    },
+
+                    new Movie
+                    {
+                        Title = <span class="hljs-string">"Ghostbusters 2"</span>,
+                        ReleaseDate = DateTime.Parse(<span class="hljs-string">"1986-2-23"</span>),
+                        Genre = <span class="hljs-string">"Comedy"</span>,
+                        Price = 9.99M
+                    },
+
+                    new Movie
+                    {
+                        Title = <span class="hljs-string">"Rio Bravo"</span>,
+                        ReleaseDate = DateTime.Parse(<span class="hljs-string">"1959-4-15"</span>),
+                        Genre = <span class="hljs-string">"Western"</span>,
+                        Price = 3.99M
+                    }
+                );
+                context.SaveChanges();
+            }
+        }
+    }
+}
+</div></code></pre>
+<p><strong>Note:</strong> If there are any movies in the database, the seed initializer returns and no movies are added.</p>
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">if</span> (context.Movie.Any())
+    {
+        <span class="hljs-built_in">return</span>;
+    }
+</div></code></pre>
+<h3 id="add-the-seed-initializer">Add the seed initializer</h3>
+<p>Update the <code>Program.cs</code> code.</p>
+<pre class="prettyprint"><code><div>    var app = builder.Build();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        SeedData.Initialize(services);
+    }
+</div></code></pre>
+<p>In the previous code, <code>Program.cs</code> has been modified to do the following:</p>
+<p>Get a database context instance from the dependency injection (DI) container.
+Call the <code>seedData.Initialize</code> method, passing to it the database context instance.
+Dispose the context when the seed method completes. The <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-statement">using statement</a> ensures the context is disposed.</p>
+<h3 id="test-the-app">Test the app</h3>
+<p>Delete all the records in the database so the seed method will run. Stop and start the app to seed the database. If the database isn't seeded, put a breakpoint on if (<code>context.Movie.Any()</code>) and step through the code.</p>
+<p>The app shows the seeded data.</p>
+<p><img src="assets/images/seeded-data.jpg" alt="Seed data results" title="Seed data results"></p>
+
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>

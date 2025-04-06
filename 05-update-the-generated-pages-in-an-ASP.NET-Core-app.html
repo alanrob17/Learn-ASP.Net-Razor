@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>05-update-the-generated-pages-in-an-ASP.NET-Core-app.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="update-the-generated-pages-in-an-aspnet-core-app">Update the generated pages in an ASP.NET Core app</h1>
+<p>The scaffolded movie app has a good start, but the presentation isn't ideal. In the Index page, <code>ReleaseDate</code> should be two words, <code>Release Date</code>.</p>
+<h2 id="update-the-model">Update the model</h2>
+<p>Update <code>Models/Movie.cs</code> with the following code:</p>
+<pre class="hljs"><code><div>    public class Movie
+    {
+        public int Id { get; <span class="hljs-built_in">set</span>; }
+        public string? Title { get; <span class="hljs-built_in">set</span>; }
+
+        [Display(Name = <span class="hljs-string">"Release Date"</span>)]
+        [DataType(DataType.Date)]
+        public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+        public string? Genre { get; <span class="hljs-built_in">set</span>; }
+
+        [Column(TypeName = <span class="hljs-string">"decimal(18, 2)"</span>)]
+        public decimal Price { get; <span class="hljs-built_in">set</span>; }
+    }
+</div></code></pre>
+<p>In the previous code:</p>
+<p>The <code>[Column(TypeName = &quot;decimal(18, 2)&quot;)]</code> data annotation enables Entity Framework Core to correctly map <code>Price</code> to currency in the database. For more information, see <a href="https://learn.microsoft.com/en-us/ef/core/modeling/relational/data-types">Data Types</a>.</p>
+<p>The <a href="https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute">[Display]</a> attribute specifies the display name of a field. In the preceding code, <code>Release Date</code> instead of <code>ReleaseDate</code>.</p>
+<p>The <a href="https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.datatypeattribute">[DataType]</a> attribute specifies the type of the data (<code>Date</code>). The time information stored in the field isn't displayed.</p>
+<p>Browse to <code>Pages/Movies</code> and hover over an Edit link to see the target URL. For example a particular link is.</p>
+<blockquote>
+<p>https://localhost:7082/Movies/Edit?id=7</p>
+</blockquote>
+<p>The <strong>Edit</strong>, <strong>Details</strong>, and <strong>Delete</strong> links are generated by the <a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/built-in/anchor-tag-helper?view=aspnetcore-9.0">Anchor Tag Helper</a> in the <code>Pages/Movies/Index.cshtml</code> file.</p>
+<pre class="hljs"><code><div>    &lt;a asp-page=<span class="hljs-string">"./Edit"</span> asp-route-id=<span class="hljs-string">"@item.Id"</span>&gt;Edit&lt;/a&gt; |
+    &lt;a asp-page=<span class="hljs-string">"./Details"</span> asp-route-id=<span class="hljs-string">"@item.Id"</span>&gt;Details&lt;/a&gt; |
+    &lt;a asp-page=<span class="hljs-string">"./Delete"</span> asp-route-id=<span class="hljs-string">"@item.Id"</span>&gt;Delete&lt;/a&gt;
+</div></code></pre>
+<p><code>Tag Helpers</code> enable server-side code to participate in creating and rendering HTML elements in Razor files.</p>
+<p>In the preceding code, the <code>Anchor Tag Helper</code> dynamically generates the HTML <code>href</code> attribute value from the Razor Page (the route is relative), the <code>asp-page</code>, and the route identifier (<code>asp-route-id</code>). For more information, see <a href="https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-9.0#url-generation-for-pages">URL generation for Pages</a>.</p>
+<p>Use <strong>View Source</strong> from a browser to examine the generated markup. A portion of the generated HTML is shown below:</p>
+<pre class="hljs"><code><div>    &lt;td&gt;
+      &lt;a href=<span class="hljs-string">"/Movies/Edit?id=1"</span>&gt;Edit&lt;/a&gt; |
+      &lt;a href=<span class="hljs-string">"/Movies/Details?id=1"</span>&gt;Details&lt;/a&gt; |
+      &lt;a href=<span class="hljs-string">"/Movies/Delete?id=1"</span>&gt;Delete&lt;/a&gt;
+    &lt;/td&gt;
+</div></code></pre>
+<p>The dynamically generated links pass the movie <code>ID</code> with a query string. For example, the <code>?id=1</code> in <code>https://localhost:5001/Movies/Details?id=1</code>.</p>
+<h2 id="add-route-template">Add route template</h2>
+<p>Update the <strong>Edit</strong>, <strong>Details</strong>, and <strong>Delete</strong> Razor Pages to use the <code>{id:int}</code> route template. Change the page directive for each of these pages from <code>@page</code> to <code>@page &quot;{id:int}&quot;</code>. Run the app and then view source.</p>
+<p>The generated HTML adds the ID to the path portion of the URL:</p>
+<pre class="hljs"><code><div>    &lt;td&gt;
+      &lt;a href=<span class="hljs-string">"/Movies/Edit/1"</span>&gt;Edit&lt;/a&gt; |
+      &lt;a href=<span class="hljs-string">"/Movies/Details/1"</span>&gt;Details&lt;/a&gt; |
+      &lt;a href=<span class="hljs-string">"/Movies/Delete/1"</span>&gt;Delete&lt;/a&gt;
+    &lt;/td&gt;
+</div></code></pre>
+<p>A request to the page with the <code>{id:int}</code> route template that does not include the integer returns an HTTP 404 (not found) error. For example, <code>https://localhost:5001/Movies/Details</code> returns a 404 error. To make the <code>ID</code> optional, append <code>?</code> to the route constraint:</p>
+<p>Test the behavior of <code>@page &quot;{id:int?}</code>&quot;:</p>
+<p>Set the page directive in <code>Pages/Movies/Details.cshtml</code> to <code>@page &quot;{id:int?}</code>&quot;.</p>
+<p>Set a break point in public async <code>Task&lt;IActionResult&gt; OnGetAsync(int? id)</code>, in <code>Pages/Movies/Details.cshtml.cs</code>.</p>
+<p>Navigate to <code>https://localhost:5001/Movies/Details/</code>.</p>
+<p>With the <code>@page &quot;{id:int}&quot;</code> directive, the break point is never hit. The routing engine returns HTTP 404. Using <code>@page &quot;{id:int?}</code>&quot;, the <code>OnGetAsync</code> method returns <code>NotFound</code> (HTTP 404):</p>
+<h2 id="review-concurrency-exception-handling">Review concurrency exception handling</h2>
+<p>Review the <code>OnPostAsync</code> method in the <code>Pages/Movies/Edit.cshtml.cs</code> file:</p>
+<pre class="hljs"><code><div>public async Task&lt;IActionResult&gt; <span class="hljs-function"><span class="hljs-title">OnPostAsync</span></span>()
+{
+    <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+    {
+        <span class="hljs-built_in">return</span> Page();
+    }
+
+    _context.Attach(Movie).State = EntityState.Modified;
+
+    try
+    {
+        await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        <span class="hljs-keyword">if</span> (!MovieExists(Movie.Id))
+        {
+            <span class="hljs-built_in">return</span> NotFound();
+        }
+        <span class="hljs-keyword">else</span>
+        {
+            throw;
+        }
+    }
+
+    <span class="hljs-built_in">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+}
+
+private bool MovieExists(int id)
+{
+    <span class="hljs-built_in">return</span> _context.Movie.Any(e =&gt; e.Id == id);
+}
+</div></code></pre>
+<p>The previous code detects concurrency exceptions when one client deletes the movie and the other client posts changes to the movie.</p>
+<p>To test the <code>catch</code> block:</p>
+<p>Set a breakpoint on <code>catch (DbUpdateConcurrencyException)</code>.</p>
+<p>Select <code>Edit</code> for a movie, make changes, but don't enter <strong>Save</strong>.</p>
+<p>In another browser window, select the <strong>Delete</strong> link for the same movie, and then delete the movie.</p>
+<p>In the previous browser window, post changes to the movie.</p>
+<p>Production code may want to detect concurrency conflicts. See <a href="https://learn.microsoft.com/en-us/aspnet/core/data/ef-rp/concurrency?view=aspnetcore-9.0">[Handle concurrency] conflicts</a> for more information.</p>
+<h2 id="posting-and-binding-review">Posting and binding review</h2>
+<p>Examine the <code>Pages/Movies/Edit.cshtml.cs</code> file:</p>
+<pre class="hljs"><code><div>public class EditModel : PageModel
+{
+    private <span class="hljs-built_in">readonly</span> RazorPagesMovie.Data.RazorPagesMovieContext _context;
+
+    public EditModel(RazorPagesMovie.Data.RazorPagesMovieContext context)
+    {
+        _context = context;
+    }
+
+    [BindProperty]
+    public Movie Movie { get; <span class="hljs-built_in">set</span>; } = default!;
+
+    public async Task&lt;IActionResult&gt; OnGetAsync(int? id)
+    {
+        <span class="hljs-keyword">if</span> (id == null)
+        {
+            <span class="hljs-built_in">return</span> NotFound();
+        }
+
+        var movie =  await _context.Movie.FirstOrDefaultAsync(m =&gt; m.Id == id);
+        <span class="hljs-keyword">if</span> (movie == null)
+        {
+            <span class="hljs-built_in">return</span> NotFound();
+        }
+        Movie = movie;
+        <span class="hljs-built_in">return</span> Page();
+    }
+
+    // To protect from overposting attacks, <span class="hljs-built_in">enable</span> the specific properties you want to <span class="hljs-built_in">bind</span> to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task&lt;IActionResult&gt; <span class="hljs-function"><span class="hljs-title">OnPostAsync</span></span>()
+    {
+        <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+        {
+            <span class="hljs-built_in">return</span> Page();
+        }
+
+        _context.Attach(Movie).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            <span class="hljs-keyword">if</span> (!MovieExists(Movie.Id))
+            {
+                <span class="hljs-built_in">return</span> NotFound();
+            }
+            <span class="hljs-keyword">else</span>
+            {
+                throw;
+            }
+        }
+
+        <span class="hljs-built_in">return</span> RedirectToPage(<span class="hljs-string">"./Index"</span>);
+    }
+
+    private bool MovieExists(int id)
+    {
+        <span class="hljs-built_in">return</span> _context.Movie.Any(e =&gt; e.Id == id);
+    }
+</div></code></pre>
+<p>When an <code>HTTP GET</code> request is made to the <code>Movies/Edit page</code>, for example, <code>https://localhost:5001/Movies/Edit/3</code>:</p>
+<p>The <code>OnGetAsync</code> method fetches the movie from the database and returns the <code>Page</code> method.</p>
+<p>The <code>Page</code> method renders the <code>Pages/Movies/Edit.cshtml</code> Razor Page. The <code>Pages/Movies/Edit.cshtml</code> file contains the model directive <code>@model RazorPagesMovie.Pages.Movies.EditModel</code>, which makes the <code>movie</code> model available on the page.</p>
+<p>The Edit form is displayed with the values from the movie.</p>
+<p>When the <code>Movies/Edit</code> page is posted:</p>
+<p>The form values on the page are bound to the <code>Movie</code> property. The <code>[BindProperty]</code> attribute enables Model binding.</p>
+<pre class="hljs"><code><div>    [BindProperty]
+    public Movie Movie { get; <span class="hljs-built_in">set</span>; }
+</div></code></pre>
+<p>If there are errors in the model state, for example, <code>ReleaseDate</code> cannot be converted to a date, the form is redisplayed with the submitted values.</p>
+<p>If there are no model errors, the movie is saved.</p>
+<p>The HTTP GET methods in the <strong>Index</strong>, <strong>Create</strong>, and <strong>Delete</strong> Razor pages follow a similar pattern. The HTTP POST <code>OnPostAsync</code> method in the <code>Create</code> Razor Page follows a similar pattern to the <code>OnPostAsync</code> method in the <code>Edit</code> Razor Page.</p>
+
+</body>
+</html>
