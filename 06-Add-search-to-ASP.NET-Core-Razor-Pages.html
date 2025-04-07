@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>06-Add-search-to-ASP.NET-Core-Razor-Pages.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="add-search-to-aspnet-core-razor-pages">Add search to ASP.NET Core Razor Pages</h1>
+<p>In the following sections, searching movies by <code>genre</code> or <code>name</code> is added.</p>
+<p>Add the following highlighted code to <code>Pages/Movies/Index.cshtml.cs</code> after <code>IList&lt;Movie&gt;</code>:</p>
+<pre class="hljs"><code><div>    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+    public string? SearchString { get; <span class="hljs-built_in">set</span>; }
+
+    public SelectList? Genres { get; <span class="hljs-built_in">set</span>; }
+
+    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+    public string? MovieGenre { get; <span class="hljs-built_in">set</span>; }
+</div></code></pre>
+<p>In the previous code:</p>
+<p><code>SearchString</code>: Contains the text users enter in the search text box. <code>SearchString</code> has the [BindProperty] attribute.
+<a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.bindpropertyattribute">[BindProperty]</a> binds form values and query strings with the same name as the property. <code>[BindProperty(SupportsGet = true)]</code> is required for binding on HTTP GET requests.</p>
+<p><code>Genres</code>: Contains the list of genres. <code>Genres</code> allows the user to select a genre from the list. <code>SelectList</code> requires using <code>Microsoft.AspNetCore.Mvc.Rendering;</code></p>
+<p><code>MovieGenre</code>: Contains the specific genre the user selects. For example, &quot;Western&quot;.</p>
+<p><code>Genres</code> and <code>MovieGenre</code> are used later.</p>
+<h2 id="warning">Warning</h2>
+<p>For security reasons, you must opt in to binding <code>GET</code> request data to page model properties. Verify user input before mapping it to properties. Opting into <code>GET</code> binding is useful when addressing scenarios that rely on query string or route values.</p>
+<p>To bind a property on <code>GET</code> requests, set the [BindProperty] attribute's <code>SupportsGet</code> property to <code>true</code>:</p>
+<pre class="hljs"><code><div>    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+</div></code></pre>
+<p>Update the <code>Movies/Index</code> page's <code>OnGetAsync</code> method with the following code:</p>
+<pre class="hljs"><code><div>    public async Task <span class="hljs-function"><span class="hljs-title">OnGetAsync</span></span>()
+    {
+        var movies = from m <span class="hljs-keyword">in</span> _context.Movie
+                     select m;
+        <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(SearchString))
+        {
+            movies = movies.Where(s =&gt; s.Title.Contains(SearchString));
+        }
+
+        Movie = await movies.ToListAsync();
+    }
+</div></code></pre>
+<p>The first line of the <code>OnGetAsync</code> method creates a <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/">LINQ</a> query to select the movies:</p>
+<pre class="hljs"><code><div>    var movies = from m <span class="hljs-keyword">in</span> _context.Movie
+        select m;
+</div></code></pre>
+<p>The query is only <strong>defined</strong> at this point, it has not been run against the database.</p>
+<p>If the <code>SearchString</code> property is not null or empty, the <code>movies</code> query is modified to filter on the search string:</p>
+<pre class="hljs"><code><div>    <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(SearchString))
+    {
+        movies = movies.Where(s =&gt; s.Title.Contains(SearchString));
+    }
+</div></code></pre>
+<p>The <code>s =&gt; s.Title.Contains()</code> code is a <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/lambda-expressions">Lambda Expression</a>. Lambdas are used in method-based <code>LINQ</code> queries as arguments to standard query operator methods such as the <a href="https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/query-syntax-and-method-syntax-in-linq">Where</a> method or <code>Contains</code>. LINQ queries are not executed when they're defined or when they're modified by calling a method, such as <code>Where</code>, <code>Contains</code>, or <code>OrderBy</code>. Rather, query execution is deferred. The evaluation of an expression is delayed until its realized value is iterated over or the <code>ToListAsync</code> method is called. See <a href="https://learn.microsoft.com/en-us/dotnet/csharp/linq/get-started/introduction-to-linq-queries#deferred">Query Execution</a> for more information.</p>
+<p><strong>Note:</strong> The <a href="https://learn.microsoft.com/en-us/dotnet/api/system.data.objects.dataclasses.entitycollection-1.contains">Contains</a> method is run on the database, not in the C# code. The case sensitivity on the query depends on the database and the collation. On SQL Server, Contains`` maps to <a href="https://learn.microsoft.com/en-us/sql/t-sql/language-elements/like-transact-sql">SQL LIKE</a>, which is case insensitive.</p>
+<p>Navigate to the Movies page and append a query string such as <code>?searchString=Ghost</code> to the URL. For example, <code>https://localhost:5001/Movies?searchString=Ghost</code>. The filtered movies are displayed.</p>
+<p>If the following route template is added to the <strong>Index</strong> page, the search string can be passed as a URL segment. For example, <code>https://localhost:5001/Movies/Ghost</code>.</p>
+<pre class="hljs"><code><div>    @page <span class="hljs-string">"{searchString?}"</span>
+</div></code></pre>
+<p>The preceding route constraint allows searching the title as route data (a URL segment) instead of as a query string value. The <code>?</code> in <code>&quot;{searchString?}&quot;</code> means this is an <strong>optional</strong> route parameter.</p>
+<p><img src="assets/images/search.jpg" alt="Search string" title="Search string"></p>
+<p>The ASP.NET Core runtime uses model binding to set the value of the <code>SearchString</code> property from the query string (<code>?searchString=Ghost</code>) or route data (<code>https://localhost:5001/Movies/Ghost</code>). Model binding is <strong>not</strong> case sensitive.</p>
+<p>However, users cannot be expected to modify the URL to search for a movie. In this step, UI is added to filter movies. If you added the route constraint <code>&quot;{searchString?}&quot;</code>, remove it.</p>
+<p>Open the <code>Pages/Movies/Index.cshtml</code> file, and add the markup after <code>Create New</code> in the following code:</p>
+<pre class="hljs"><code><div>    &lt;form&gt;
+        &lt;p&gt;
+            &lt;label&gt;Title: &lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">"text"</span> asp-for=<span class="hljs-string">"SearchString"</span> /&gt;&lt;/label&gt;
+            &lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">"submit"</span> value=<span class="hljs-string">"Filter"</span> /&gt;
+        &lt;/p&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<p>The HTML <code>&lt;form&gt;</code> tag uses the following Tag Helpers:</p>
+<p><a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-9.0#the-form-tag-helper">Form Tag Helper</a>. When the form is submitted, the filter string is sent to the <em>Pages/Movies/Index</em> page via query string.</p>
+<p><a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-9.0#the-input-tag-helper">Input Tag Helper</a></p>
+<p>Save the changes and test the filter.</p>
+<p><img src="assets/images/search-filter-field.jpg" alt="Search filter field" title="Search filter field"></p>
+<h2 id="search-by-genre">Search by genre</h2>
+<p>Update the <code>Movies/Index.cshtml.cs</code> page <code>OnGetAsync</code> method with the following code:</p>
+<pre class="hljs"><code><div>    public async Task <span class="hljs-function"><span class="hljs-title">OnGetAsync</span></span>()
+    {
+        // &lt;snippet_search_linqQuery&gt;
+        IQueryable&lt;string&gt; genreQuery = from m <span class="hljs-keyword">in</span> _context.Movie
+                                        orderby m.Genre
+                                        select m.Genre;
+        // &lt;/snippet_search_linqQuery&gt;
+
+        var movies = from m <span class="hljs-keyword">in</span> _context.Movie
+                     select m;
+
+        <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(SearchString))
+        {
+            movies = movies.Where(s =&gt; s.Title.Contains(SearchString));
+        }
+
+        <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(MovieGenre))
+        {
+            movies = movies.Where(x =&gt; x.Genre == MovieGenre);
+        }
+
+        // &lt;snippet_search_selectList&gt;
+        Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
+        // &lt;/snippet_search_selectList&gt;
+        Movie = await movies.ToListAsync();
+    }
+</div></code></pre>
+<p>The following code is a LINQ query that retrieves all the genres from the database.</p>
+<pre class="hljs"><code><div>    IQueryable&lt;string&gt; genreQuery = from m <span class="hljs-keyword">in</span> _context.Movie
+                                        orderby m.Genre
+                                        select m.Genre;
+</div></code></pre>
+<p>The <code>SelectList</code> of genres is created by projecting the distinct genres:</p>
+<pre class="hljs"><code><div>    Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
+</div></code></pre>
+<h3 id="add-search-by-genre-to-the-razor-page">Add search by genre to the Razor Page</h3>
+<p>Update the <code>Index.cshtml</code> <a href="https://developer.mozilla.org/docs/Web/HTML/Element/form"><form></a> element as highlighted in the following markup:</p>
+<pre class="hljs"><code><div>    &lt;form&gt;
+        &lt;p&gt;
+            &lt;select asp-for=<span class="hljs-string">"MovieGenre"</span> asp-items=<span class="hljs-string">"Model.Genres"</span>&gt;
+                &lt;option value=<span class="hljs-string">""</span>&gt;All&lt;/option&gt;
+            &lt;/select&gt;
+            &lt;label&gt;Title: &lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">"text"</span> asp-for=<span class="hljs-string">"SearchString"</span> /&gt;&lt;/label&gt;
+            &lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">"submit"</span> value=<span class="hljs-string">"Filter"</span> /&gt;
+        &lt;/p&gt;
+    &lt;/form&gt;
+</div></code></pre>
+<p>Test the app by searching by genre, by movie title, and by both:</p>
+<p><img src="assets/images/genres.jpg" alt="Genres filter" title="Genres filter"></p>
+
+</body>
+</html>
