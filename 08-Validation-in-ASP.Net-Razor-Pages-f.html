@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Validation in ASP.Net Razor Pages</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Get started with Razor Pages in ASP.NET Core</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Validation in ASP.Net Razor Pages <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="validation-in-aspnet-razor-pages">Validation in ASP.Net Razor Pages</h1>
+<p>In this section, validation logic is added to the <code>Movie</code> model. The validation rules are enforced any time a user creates or edits a movie.</p>
+<h2 id="validation">Validation</h2>
+<p>A key tenet of software development is called DRY (&quot;Don't Repeat Yourself&quot;). Razor Pages encourages development where functionality is specified once, and it's reflected throughout the app. DRY can help:</p>
+<ul>
+<li>Reduce the amount of code in an app.</li>
+<li>Make the code less error prone, and easier to test and maintain.</li>
+</ul>
+<p>The validation support provided by Razor Pages and Entity Framework is a good example of the DRY principle:</p>
+<ul>
+<li>Validation rules are declaratively specified in one place, in the model class.</li>
+<li>Rules are enforced everywhere in the app.</li>
+</ul>
+<h2 id="add-validation-rules-to-the-movie-model">Add validation rules to the movie model</h2>
+<p>The <a href="https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations">System.ComponentModel.DataAnnotations</a> namespace provides:</p>
+<ul>
+<li>A set of built-in validation attributes that are applied declaratively to a class or property.</li>
+<li>Formatting attributes like [DataType] that help with formatting and don't provide any validation.</li>
+</ul>
+<p>Update the <code>Movie</code> class to take advantage of the built-in <code>[Required]</code>, <code>[StringLength]</code>, <code>[RegularExpression]</code>, and <code>[Range]</code> validation attributes.</p>
+<pre class="prettyprint"><code><div>using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RazorPagesMovie.Models;
+
+public class Movie
+{
+    public int Id { get; <span class="hljs-built_in">set</span>; }
+
+    [StringLength(60, MinimumLength = 3)]
+    [Required]
+    public string Title { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+
+    [DataType(DataType.Date)]
+    public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+
+    [Range(1, 100)]
+    [DataType(DataType.Currency)]
+    [Column(TypeName = <span class="hljs-string">"decimal(18, 2)"</span>)]
+    public decimal Price { get; <span class="hljs-built_in">set</span>; }
+
+    [RegularExpression(@<span class="hljs-string">"^[A-Z]+[a-zA-Z\s]*$"</span>)]
+    [Required]
+    [StringLength(30)]
+    public string Genre { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+
+    [RegularExpression(@<span class="hljs-string">"^[A-Z]+[a-zA-Z0-9"</span><span class="hljs-string">"'\s-]*$"</span>)]
+    [StringLength(5)]
+    [Required]
+    public string Rating { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+}
+</div></code></pre>
+<p>The validation attributes specify behavior to enforce on the model properties they're applied to:</p>
+<p>The <code>[Required]</code> and <code>[MinimumLength]</code> attributes indicate that a property must have a value. Nothing prevents a user from entering white space to satisfy this validation.</p>
+<p>The <code>[RegularExpression]</code> attribute is used to limit what characters can be input. In the preceding code, <code>Genre</code>:</p>
+<ul>
+<li>Must only use letters.</li>
+<li>The first letter must be uppercase. White spaces are allowed, while numbers and special characters aren't allowed.</li>
+</ul>
+<p>The <code>RegularExpression</code> <code>Rating</code>:</p>
+<ul>
+<li>Requires that the first character be an uppercase letter.</li>
+<li>Allows special characters and numbers in subsequent spaces. &quot;PG-13&quot; is valid for a rating, but fails for a Genre.</li>
+</ul>
+<p>The <code>[Range]</code> attribute constrains a value to within a specified range.</p>
+<p>The <code>[StringLength]</code> attribute can set a maximum length of a string property, and optionally its minimum length.</p>
+<p>Value types, such as <code>decimal</code>, <code>int</code>, <code>float</code>, <code>DateTime</code>, are inherently required and don't need the <code>[Required]</code> attribute.</p>
+<p>The preceding validation rules are used for demonstration, they are not optimal for a production system. For example, the preceding prevents entering a movie with only two chars and doesn't allow special characters in <code>Genre</code>.</p>
+<p>Having validation rules automatically enforced by ASP.NET Core helps:</p>
+<ul>
+<li>Make the app more robust.</li>
+<li>Reduce chances of saving invalid data to the database.</li>
+</ul>
+<h2 id="validation-error-ui-in-razor-pages">Validation Error UI in Razor Pages</h2>
+<p>Run the app and navigate to <code>Pages/Movies</code>.</p>
+<p>Select the <strong>Create New</strong> link. Complete the form with some invalid values. When jQuery client-side validation detects the error, it displays an error message.</p>
+<p><img src="assets/images/invalid-create-movie.jpg" alt="Validation failure" title="Validation failure"></p>
+<p>Notice how the form has automatically rendered a validation error message in each field containing an invalid value. The errors are enforced both client-side, using JavaScript and jQuery, and server-side, when a user has JavaScript disabled.</p>
+<p>A significant benefit is that <strong>no</strong> code changes were necessary in the Create or Edit pages. Once data annotations were applied to the model, the validation UI was enabled. The Razor Pages created in this tutorial automatically picked up the validation rules, using validation attributes on the properties of the <code>Movie</code> model class. Test validation using the Edit page, the same validation is applied.</p>
+<p>The form data isn't posted to the server until there are <strong>no</strong> client-side validation errors. Verify form data isn't posted by one or more of the following approaches:</p>
+<ul>
+<li>Put a break point in the <code>OnPostAsync</code> method. Submit the form by selecting <code>Create</code> or <code>Save</code>. The break point is never hit.</li>
+<li>Use the Fiddler tool.</li>
+<li>Use the browser developer tools to monitor network traffic.</li>
+</ul>
+<h2 id="server-side-validation">Server-side validation</h2>
+<p>When JavaScript is disabled in the browser, submitting the form with errors will post to the server.</p>
+<p>Optional, test server-side validation:</p>
+<ol>
+<li>Disable JavaScript in the browser. JavaScript can be disabled using browser's developer tools. If JavaScript cannot be disabled in the browser, try another browser.</li>
+<li>Set a break point in the <code>OnPostAsync</code> method of the Create or Edit page.</li>
+<li>Submit a form with invalid data.</li>
+<li>Verify the model state is invalid:</li>
+</ol>
+<pre class="prettyprint"><code><div>    <span class="hljs-keyword">if</span> (!ModelState.IsValid)
+    {
+        <span class="hljs-built_in">return</span> Page();
+    }
+</div></code></pre>
+<p>Alternatively, Disable client-side validation on the server.</p>
+<p>The following code shows a portion of the <code>Create.cshtml</code> page scaffolded earlier in the tutorial. It's used by the Create and Edit pages to:</p>
+<ul>
+<li>Display the initial form.</li>
+<li>Redisplay the form in the event of an error.</li>
+</ul>
+<pre class="prettyprint"><code><div>    &lt;form method=<span class="hljs-string">"post"</span>&gt;
+        &lt;div asp-validation-summary=<span class="hljs-string">"ModelOnly"</span> class=<span class="hljs-string">"text-danger"</span>&gt;&lt;/div&gt;
+        &lt;div class=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label asp-for=<span class="hljs-string">"Movie.Title"</span> class=<span class="hljs-string">"control-label"</span>&gt;&lt;/label&gt;
+            &lt;input asp-for=<span class="hljs-string">"Movie.Title"</span> class=<span class="hljs-string">"form-control"</span> /&gt;
+            &lt;span asp-validation-for=<span class="hljs-string">"Movie.Title"</span> class=<span class="hljs-string">"text-danger"</span>&gt;&lt;/span&gt;
+        &lt;/div&gt;
+</div></code></pre>
+<p>The <a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-9.0">Input Tag Helper</a> uses the <a href="https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/mvc-music-store/mvc-music-store-part-6">DataAnnotations</a> attributes and produces HTML attributes needed for jQuery Validation on the client-side. The <a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-9.0#the-validation-tag-helpers">Validation Tag Helper</a> displays validation errors. See <a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-9.0">Validation</a> for more information.</p>
+<p>The Create and Edit pages have no validation rules in them. The validation rules and the error strings are specified only in the <code>Movie</code> class. These validation rules are automatically applied to Razor Pages that edit the <code>Movie</code> model.</p>
+<p>When validation logic needs to change, it's done only in the model. Validation is applied consistently throughout the app, validation logic is defined in one place. Validation in one place helps keep the code clean, and makes it easier to maintain and update.</p>
+<h2 id="use-datatype-attributes">Use DataType Attributes</h2>
+<p>Examine the <code>Movie</code> class. The <code>System.ComponentModel.DataAnnotations</code> namespace provides formatting attributes in addition to the built-in set of validation attributes. The <code>[DataType]</code> attribute is applied to the <code>ReleaseDate</code> and <code>Price</code> properties.</p>
+<pre class="prettyprint"><code><div>    [DataType(DataType.Date)]
+    public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+
+    [Range(1, 100)]
+    [DataType(DataType.Currency)]
+    [Column(TypeName = <span class="hljs-string">"decimal(18, 2)"</span>)]
+    public decimal Price { get; <span class="hljs-built_in">set</span>; }
+</div></code></pre>
+<p>The <code>[DataType]</code> attributes provide:</p>
+<ul>
+<li>Hints for the view engine to format the data.</li>
+<li>Supplies attributes such as <code>&lt;a&gt;</code> for URL's and <code>&lt;a href=&quot;mailto:EmailAddress.com&quot;&gt;</code> for email.</li>
+</ul>
+<p>Use the <code>[RegularExpression]</code> attribute to validate the format of the data. The <code>[DataType]</code> attribute is used to specify a data type that's more specific than the database intrinsic type. <code>[DataType]</code> attributes aren't validation attributes. In the sample app, only the date is displayed, without time.</p>
+<p>The DataType enumeration provides many data types, such as <code>Date</code>, <code>Time</code>, <code>PhoneNumber</code>, <code>Currency</code>, <code>EmailAddress</code>, and more.</p>
+<p>The <code>[DataType]</code> attributes:</p>
+<ul>
+<li>Can enable the app to automatically provide type-specific features. For example, a <code>mailto:</code> link can be created for <code>DataType.* EmailAddress</code>.</li>
+<li>Can provide a date selector <code>DataType.Date</code> in browsers that support HTML5.</li>
+<li>Emit HTML 5 <code>data-</code>, pronounced &quot;data dash&quot;, attributes that HTML 5 browsers consume.</li>
+<li>Do <code>not</code> provide any validation.</li>
+</ul>
+<p><code>DataType.Date</code> doesn't specify the format of the date that's displayed. By default, the data field is displayed according to the default formats based on the server's <code>CultureInfo</code>.</p>
+<p>The <code>[Column(TypeName = &quot;decimal(18, 2)&quot;)]</code> data annotation is required so Entity Framework Core can correctly map <code>Price</code> to currency in the database. For more information, see <a href="https://learn.microsoft.com/en-us/ef/core/modeling/relational/data-types">Data Types</a>.</p>
+<p>The <code>[DisplayFormat]</code> attribute is used to explicitly specify the date format:</p>
+<pre class="prettyprint"><code><div>[DisplayFormat(DataFormatString = <span class="hljs-string">"{0:yyyy-MM-dd}"</span>, ApplyFormatInEditMode = <span class="hljs-literal">true</span>)]
+public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+</div></code></pre>
+<p>The <code>ApplyFormatInEditMode</code> setting specifies that the formatting will be applied when the value is displayed for editing. That behavior may not be wanted for some fields. For example, in currency values, the currency symbol is usually not wanted in the edit UI.</p>
+<p>The <code>[DisplayFormat]</code> attribute can be used by itself, but it's generally a good idea to use the <code>[DataType]</code> attribute. The <code>[DataType]</code> attribute conveys the semantics of the data as opposed to how to render it on a screen. The <code>[DataType]</code> attribute provides the following benefits that aren't available with <code>[DisplayFormat]</code>:</p>
+<p>The browser can enable HTML5 features, for example to show a calendar control, the locale-appropriate currency symbol, email links, etc.</p>
+<p>By default, the browser renders data using the correct format based on its locale.</p>
+<p>The <code>[DataType]</code> attribute can enable the ASP.NET Core framework to choose the right field template to render the data. The DisplayFormat, if used by itself, uses the string template.</p>
+<p>Note: jQuery validation doesn't work with the <code>[Range]</code> attribute and DateTime. For example, the following code will always display a client-side validation error, even when the date is in the specified range:</p>
+<pre class="prettyprint"><code><div>    [Range(typeof(DateTime), <span class="hljs-string">"1/1/1966"</span>, <span class="hljs-string">"1/1/2020"</span>)]
+</div></code></pre>
+<p>It's a best practice to avoid compiling hard dates in models, so using the <code>[Range]</code> attribute and <code>DateTime</code> is discouraged. Use <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-9.0">Configuration</a> for date ranges and other values that are subject to frequent change rather than specifying it in code.</p>
+<p>The following code shows combining attributes on one line:</p>
+<pre class="prettyprint"><code><div>using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RazorPagesMovie.Models;
+
+public class Movie
+{
+    public int Id { get; <span class="hljs-built_in">set</span>; }
+
+    [StringLength(60, MinimumLength = 3)]
+    public string Title { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+
+    [Display(Name = <span class="hljs-string">"Release Date"</span>), DataType(DataType.Date)]
+    public DateTime ReleaseDate { get; <span class="hljs-built_in">set</span>; }
+
+    [RegularExpression(@<span class="hljs-string">"^[A-Z]+[a-zA-Z\s]*$"</span>), Required, StringLength(30)]
+    public string Genre { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+
+    [Range(1, 100), DataType(DataType.Currency)]
+    [Column(TypeName = <span class="hljs-string">"decimal(18, 2)"</span>)]
+    public decimal Price { get; <span class="hljs-built_in">set</span>; }
+
+    [RegularExpression(@<span class="hljs-string">"^[A-Z]+[a-zA-Z0-9"</span><span class="hljs-string">"'\s-]*$"</span>), StringLength(5)]
+    public string Rating { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+}
+</div></code></pre>
+<p><a href="https://learn.microsoft.com/en-us/aspnet/core/data/ef-rp/intro?view=aspnetcore-9.0">Get started with Razor Pages and EF Core</a> shows advanced EF Core operations with Razor Pages.</p>
+<h2 id="apply-migrations">Apply migrations</h2>
+<p>The DataAnnotations applied to the class changes the schema. For example, the DataAnnotations applied to the <code>Title</code> field:</p>
+<pre class="prettyprint"><code><div>    [StringLength(60, MinimumLength = 3)]
+    [Required]
+    public string Title { get; <span class="hljs-built_in">set</span>; } = string.Empty;
+</div></code></pre>
+<ul>
+<li>Limits the characters to <strong>60</strong>.</li>
+<li>Doesn't allow a <code>null</code> value.</li>
+</ul>
+<p>The <code>Movie</code> table currently has the following schema:</p>
+<pre class="prettyprint"><code><div>CREATE TABLE [dbo].[Movie] (
+    [ID]          INT             IDENTITY (1, 1) NOT NULL,
+    [Title]       NVARCHAR (MAX)  NULL,
+    [ReleaseDate] DATETIME2 (7)   NOT NULL,
+    [Genre]       NVARCHAR (MAX)  NULL,
+    [Price]       DECIMAL (18, 2) NOT NULL,
+    [Rating]      NVARCHAR (MAX)  NULL,
+    CONSTRAINT [PK_Movie] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+</div></code></pre>
+<p>The preceding schema changes don't cause EF to throw an exception. However, create a migration so the schema is consistent with the model.</p>
+<p>From the Tools menu, select <code>NuGet Package Manager &gt; Package Manager Console</code>. In the PMC, enter the following commands:</p>
+<pre class="prettyprint"><code><div>    Add-Migration New_DataAnnotations
+
+    Update-Database
+</div></code></pre>
+<p><code>Update-Database</code> runs the <code>Up</code> method of the <code>New_DataAnnotations</code> class.</p>
+<pre class="prettyprint"><code><div>public partial class New_DataAnnotations : Migration
+{
+    /// &lt;inheritdoc /&gt;
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn&lt;string&gt;(
+            name: <span class="hljs-string">"Title"</span>,
+            table: <span class="hljs-string">"Movie"</span>,
+            <span class="hljs-built_in">type</span>: <span class="hljs-string">"nvarchar(60)"</span>,
+            maxLength: 60,
+            nullable: <span class="hljs-literal">false</span>,
+            oldClrType: typeof(string),
+            oldType: <span class="hljs-string">"nvarchar(max)"</span>);
+
+        migrationBuilder.AlterColumn&lt;string&gt;(
+            name: <span class="hljs-string">"Rating"</span>,
+            table: <span class="hljs-string">"Movie"</span>,
+            <span class="hljs-built_in">type</span>: <span class="hljs-string">"nvarchar(5)"</span>,
+            maxLength: 5,
+            nullable: <span class="hljs-literal">false</span>,
+            oldClrType: typeof(string),
+            oldType: <span class="hljs-string">"nvarchar(max)"</span>);
+
+        migrationBuilder.AlterColumn&lt;string&gt;(
+            name: <span class="hljs-string">"Genre"</span>,
+            table: <span class="hljs-string">"Movie"</span>,
+            <span class="hljs-built_in">type</span>: <span class="hljs-string">"nvarchar(30)"</span>,
+            maxLength: 30,
+            nullable: <span class="hljs-literal">false</span>,
+            oldClrType: typeof(string),
+            oldType: <span class="hljs-string">"nvarchar(max)"</span>);
+    }
+</div></code></pre>
+<p>The updated <code>Movie</code> table has the following schema:</p>
+<pre class="prettyprint"><code><div>CREATE TABLE [dbo].[Movie] (
+    [ID]          INT             IDENTITY (1, 1) NOT NULL,
+    [Title]       NVARCHAR (60)   NOT NULL,
+    [ReleaseDate] DATETIME2 (7)   NOT NULL,
+    [Genre]       NVARCHAR (30)   NOT NULL,
+    [Price]       DECIMAL (18, 2) NOT NULL,
+    [Rating]      NVARCHAR (5)    NOT NULL,
+    CONSTRAINT [PK_Movie] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+</div></code></pre>
+<h2 id="additional-resources">Additional resources</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/working-with-forms?view=aspnetcore-9.0">Tag Helpers in forms in ASP.NET Core</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization?view=aspnetcore-9.0">Globalization and localization in ASP.NET Core</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-9.0">Tag Helpers in ASP.NET Core</a></li>
+<li><a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/authoring?view=aspnetcore-9.0">Author Tag Helpers in ASP.NET Core</a></li>
+</ul>
+
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
