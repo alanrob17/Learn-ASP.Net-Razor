@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Adding pagination to ASP.Net Razor Pages</title>
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="assets/css/starter-template.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+<style type="text/css">
+html {
+	font-size: 90.0%;
+}
+
+h2 {
+	margin-top: 60px;
+}
+
+h4, h3 {
+	padding-top: 40px!;		
+}
+
+p {
+	font-size: 1.2em;
+}
+h4 {
+	font-size: 1.4em;
+}
+
+img, pre.prettyprint {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+    color:#007bff;
+
+}
+blockquote {
+    border-left: 4px solid #999;
+    padding-left: 1rem;
+    page-break-inside: avoid;
+}
+:target:before {
+  content: "";
+  display: block;
+  height: 80px; /* adjust this value to your needs */
+  margin: -80px 0 0; /* this should be a negative value of the height above */
+}
+</style>
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Get started with Razor Pages in ASP.NET Core</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Adding pagination to ASP.Net Razor Pages <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="starter-template">
+
+
+<h1 id="adding-pagination-to-aspnet-razor-pages">Adding pagination to ASP.Net Razor Pages</h1>
+<p>Create a new Model class named <code>PaginatedList.cs</code>.</p>
+<pre class="prettyprint"><code><div>public class PaginatedList&lt;T&gt; : List&lt;T&gt;
+{
+    public int PageIndex { get; private <span class="hljs-built_in">set</span>; }
+    public int TotalPages { get; private <span class="hljs-built_in">set</span>; }
+
+    public PaginatedList(List&lt;T&gt; items, int count, int pageIndex, int pageSize)
+    {
+        PageIndex = pageIndex;
+        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+        this.AddRange(items);
+    }
+
+    public bool HasPreviousPage =&gt; PageIndex &gt; 1;
+
+    public bool HasNextPage =&gt; PageIndex &lt; TotalPages;
+
+    public static async Task&lt;PaginatedList&lt;T&gt;&gt; CreateAsync(
+        IQueryable&lt;T&gt; <span class="hljs-built_in">source</span>, int pageIndex, int pageSize)
+    {
+        var count = await source.CountAsync();
+        var items = await source.Skip(
+            (pageIndex - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        <span class="hljs-built_in">return</span> new PaginatedList&lt;T&gt;(items, count, pageIndex, pageSize);
+    }
+}
+</div></code></pre>
+<p>Add the following code to the bottom of the <code>Movies/Index.cshtml</code> page after the <code>Table</code> code.</p>
+<pre class="prettyprint"><code><div>@{
+    var prevDisabled = !Model.Movie.HasPreviousPage ? <span class="hljs-string">"disabled"</span> : <span class="hljs-string">""</span>;
+    var nextDisabled = !Model.Movie.HasNextPage ? <span class="hljs-string">"disabled"</span> : <span class="hljs-string">""</span>;
+}
+
+&lt;div class=<span class="hljs-string">"pagination-container"</span>&gt;
+    &lt;a asp-page=<span class="hljs-string">"./Index"</span>
+       asp-route-pageIndex=<span class="hljs-string">"@(Model.Movie.PageIndex - 1)"</span>
+       class=<span class="hljs-string">"btn btn-primary @prevDisabled"</span>&gt;
+        Previous
+    &lt;/a&gt;
+    &lt;span class=<span class="hljs-string">"page-number"</span>&gt;
+        Page @Model.Movie.PageIndex of @Model.Movie.TotalPages
+    &lt;/span&gt;
+    &lt;a asp-page=<span class="hljs-string">"./Index"</span>
+       asp-route-pageIndex=<span class="hljs-string">"@(Model.Movie.PageIndex + 1)"</span>
+       class=<span class="hljs-string">"btn btn-primary @nextDisabled"</span>&gt;
+        Next
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+    .pagination-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .page-number {
+        margin: 0 10px;
+    }
+&lt;/style&gt;
+</div></code></pre>
+<p>Change the <code>Movies/Index.cshtml.cs page</code> code.</p>
+<pre class="prettyprint"><code><div>public class IndexModel : PageModel
+{
+    private <span class="hljs-built_in">readonly</span> RazorPagesMovie.Data.RazorPagesMovieContext _context;
+
+    public IndexModel(RazorPagesMovie.Data.RazorPagesMovieContext context)
+    {
+        _context = context;
+    }
+
+    public PaginatedList&lt;Movie&gt; Movie { get; <span class="hljs-built_in">set</span>; } = default!;
+
+    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+    public int CurrentPage { get; <span class="hljs-built_in">set</span>; } = 1;
+    public int Count { get; <span class="hljs-built_in">set</span>; }
+    public int PageSize { get; <span class="hljs-built_in">set</span>; } = 5;
+    public int TotalPages =&gt; (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+
+    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+    public string? SearchString { get; <span class="hljs-built_in">set</span>; }
+
+    public SelectList? Genres { get; <span class="hljs-built_in">set</span>; }
+
+    [BindProperty(SupportsGet = <span class="hljs-literal">true</span>)]
+    public string? MovieGenre { get; <span class="hljs-built_in">set</span>; }
+
+    public async Task OnGetAsync(int? pageIndex)
+    {
+        IQueryable&lt;string&gt; genreQuery = from m <span class="hljs-keyword">in</span> _context.Movie
+                                        orderby m.Genre
+                                        select m.Genre;
+
+        var movies = from m <span class="hljs-keyword">in</span> _context.Movie
+                     select m;
+
+        <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(SearchString))
+        {
+            PageSize = 1000;
+            movies = movies.Where(s =&gt; s.Title.Contains(SearchString));
+        }
+
+        <span class="hljs-keyword">if</span> (!string.IsNullOrEmpty(MovieGenre))
+        {
+            PageSize = 1000;
+            movies = movies.Where(x =&gt; x.Genre == MovieGenre);
+        }
+
+        CurrentPage = pageIndex ?? 1;
+
+        Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
+
+        // Create paginated list AFTER all filtering is applied
+        Count = await movies.CountAsync();
+        Movie = await PaginatedList&lt;Movie&gt;.CreateAsync(movies, CurrentPage, PageSize);
+    }
+}
+</div></code></pre>
+<p>Run the code and it should return.</p>
+<p><img src="assets/images/paginated-page.jpg" alt="Pagination" title="Pagination"></p>
+<p><strong>Note:</strong> if you add a <code>searchString</code> or <code>Genre</code> I have reset the <code>PageSize</code> to 1000 to remove the pagination. I did this because I can't get the pagination and <code>Genre</code> or <code>searchString</code> values to work properly.</p>
+<p><img src="assets/images/pagination-removed.jpg" alt="Remove pagination" title="Remove pagination"></p>
+
+
+
+</div><!-- starter-template -->
+</div><!-- /.container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"/>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
