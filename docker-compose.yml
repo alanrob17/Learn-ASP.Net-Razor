@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    container_name: learning-razor-pages-web
+    image: learning-razor-pages-app
+    ports:
+      - "8000:80"
+    volumes:
+      - ./html:/usr/local/apache2/htdocs
+    environment:
+      - APACHE_LOG_DIR=/var/log/apache2  # Example env variable
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
